@@ -1,6 +1,6 @@
 {
   "name": "copy-webpack-externals-manifest",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Webpack plugin for copy externals assets to output and write to manifest",
   "main": "index.js",
   "scripts": {

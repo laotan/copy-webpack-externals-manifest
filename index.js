@@ -17,7 +17,7 @@ function CopyWebpackExternalsManifest(options) {
     })
 };
 
-WebpackExternalsCopyPlugin.prototype.apply = function (compiler) {
+CopyWebpackExternalsManifest.prototype.apply = function (compiler) {
     // assign webpack config externals
     compiler.options.externals = (typeof compiler.options.externals === 'object')
         ? Object.assign(compiler.options.externals, this.externals)
@@ -28,6 +28,7 @@ WebpackExternalsCopyPlugin.prototype.apply = function (compiler) {
     this.externalsAssets.forEach(item => {
         let fromDir = `node_modules/${item.module}/`;
         let toDir = `${compiler.options.output.path}/${item.module}/${item.version}/`;
+        let externalsDir = `${compiler.options.output.publicPath}${item.module}/${item.version}/`
 
         // copy entry
         if(typeof item.entry === "string"){
@@ -35,14 +36,14 @@ WebpackExternalsCopyPlugin.prototype.apply = function (compiler) {
                 from: fromDir + item.entry,
                 to: toDir + item.entry
             });
-            externalsManifest[item.entry] = `${item.module}/${item.version}/${item.entry}`;
+            externalsManifest[item.entry] = `${externalsDir}${item.entry}`;
         }else if(Array.isArray(item.entry)){
             item.entry.forEach(entry => {
                 copyAssets.push({
                     from: fromDir + entry,
                     to: toDir + entry
                 });
-                externalsManifest[entry] = `${item.module}/${item.version}/${entry}`;
+                externalsManifest[entry] = `${externalsDir}${entry}`;
             })
         }
 
