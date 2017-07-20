@@ -1,0 +1,29 @@
+{
+  "name": "copy-webpack-externals-manifest",
+  "version": "0.0.1",
+  "description": "Webpack plugin for copy externals assets to output and write to manifest",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/laotan/copy-webpack-externals-manifest.git"
+  },
+  "keywords": [
+    "webpack",
+    "plugin",
+    "externals",
+    "manifest"
+  ],
+  "author": "laotan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/laotan/copy-webpack-externals-manifest/issues"
+  },
+  "homepage": "https://github.com/laotan/copy-webpack-externals-manifest#readme",
+  "dependencies": {
+    "copy-webpack-plugin": "^4.0.1",
+    "webpack-assets-manifest": "^0.7.0"
+  }
+}
