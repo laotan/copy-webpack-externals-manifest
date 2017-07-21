@@ -36,14 +36,14 @@ CopyWebpackExternalsManifest.prototype.apply = function (compiler) {
                 from: fromDir + item.entry,
                 to: toDir + item.entry
             });
-            externalsManifest[item.entry] = `${externalsDir}${item.entry}`;
+            externalsManifest[`${item.module}/${item.entry}`] = `${externalsDir}${item.entry}`;
         }else if(Array.isArray(item.entry)){
             item.entry.forEach(entry => {
                 copyAssets.push({
                     from: fromDir + entry,
                     to: toDir + entry
                 });
-                externalsManifest[entry] = `${externalsDir}${entry}`;
+                externalsManifest[`${item.module}/${entry}`] = `${externalsDir}${entry}`;
             })
         }
 
