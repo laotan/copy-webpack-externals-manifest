@@ -23,15 +23,15 @@ new CopyWebpackExternalsManifest([Object])
     root: "moment",
     commonjs2: 'moment'
   },
-  assets:["locale/**/*"] //not required
+  assets:["locale"] //not required
 }
 ```
 
 | Key | Required | Details |
 | --- | --- | --- |
 | module | Y | "moment" |
-| entry | Y | "moment/min/moment.min.js" or ["moment/min/moment.js", ...]  |
-| export | Y | just see [webpack externals](https://webpack.js.org/configuration/externals/) |
-| assets | N | [copy-webpack-plugin -> from](https://github.com/kevlened/copy-webpack-plugin#pattern-properties) , will not append to manifest.json |
+| entry | Y | `String` `Array`"moment/min/moment.min.js" or ["moment/min/moment.js", ...]  |
+| export | Y | [webpack externals](https://webpack.js.org/configuration/externals/) |
+| assets | N | `Array`, Directory or file, [copy-webpack-plugin](https://github.com/kevlened/copy-webpack-plugin#pattern-properties) , will not append to manifest.json |
 
 

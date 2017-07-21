@@ -53,7 +53,7 @@ CopyWebpackExternalsManifest.prototype.apply = function (compiler) {
                 from: fromDir + entry,
                 to: toDir + entry
             }));
-            this.assetsToCopy.push(...subjectAssets);
+            copyAssets.push(...subjectAssets);
         }
     });
 
