@@ -10,10 +10,14 @@ Webpack plugin for copy externals assets to output and write to manifest
 
 ```
 const CopyWebpackExternalsManifest = require('copy-webpack-externals-manifest')
-new CopyWebpackExternalsManifest([Object])
+new CopyWebpackExternalsManifest({
+    externals: [Object],
+    fileName: String, //default:"manifest.json"
+    chunksOrder: Array, //default: ["manifest", "vendor"]
+})
 ```
 
-### properties
+### externals properties
 
 ```
 {
@@ -23,7 +27,7 @@ new CopyWebpackExternalsManifest([Object])
     root: "moment",
     commonjs2: 'moment'
   },
-  assets:["locale"] //not required
+  assets:["locale"] //optional
 }
 ```
 
@@ -32,6 +36,20 @@ new CopyWebpackExternalsManifest([Object])
 | module | Y | "moment" |
 | entry | Y | `String` `Array`"moment/min/moment.min.js" or ["moment/min/moment.js", ...]  |
 | export | Y | [webpack externals](https://webpack.js.org/configuration/externals/) |
-| assets | N | `Array`, Directory or file, [copy-webpack-plugin](https://github.com/kevlened/copy-webpack-plugin#pattern-properties) , will not append to manifest.json |
+| assets | N | `Array`, Directory or file, [copy-webpack-plugin](https://github.com/kevlened/copy-webpack-plugin#pattern-properties) |
 
 
+### manifest.json
+
+```
+{
+  "externals": {
+    "moment/min/moment.min.js": "cdn://moment/2.18.1/min/moment.min.js"
+  },
+  "chunks": {
+    "manifest.js": "cdn://manifest.js",
+    "vendor.js": "cdn://vendor.js",
+    ...
+  }
+}
+```

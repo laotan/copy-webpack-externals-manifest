@@ -1,12 +1,13 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const WebpackAssetsManifest = require('webpack-assets-manifest')
+const path = require('path')
 
 function CopyWebpackExternalsManifest(options) {
-
-    this.externalsAssets= [];
+    this.externalsAssets = [];
     this.externals = {};
+    this.chunksOrder = options.chunksOrder || ["manifest", "vendor"]
+    this.fileName = options.fileName || 'manifest.json'
 
-    options.forEach(item => {
+    options.externals.forEach(item => {
         // externals
         this.externals[item.module] = item.export;
 
@@ -18,26 +19,28 @@ function CopyWebpackExternalsManifest(options) {
 };
 
 CopyWebpackExternalsManifest.prototype.apply = function (compiler) {
+    let _this = this;
+
     // assign webpack config externals
     compiler.options.externals = (typeof compiler.options.externals === 'object')
-        ? Object.assign(compiler.options.externals, this.externals)
-        : this.externals;
+        ? Object.assign(compiler.options.externals, _this.externals)
+        : _this.externals;
 
     let copyAssets = [];
     let externalsManifest = {};
-    this.externalsAssets.forEach(item => {
+    _this.externalsAssets.forEach(item => {
         let fromDir = `node_modules/${item.module}/`;
         let toDir = `${compiler.options.output.path}/${item.module}/${item.version}/`;
         let externalsDir = `${compiler.options.output.publicPath}${item.module}/${item.version}/`
 
         // copy entry
-        if(typeof item.entry === "string"){
+        if (typeof item.entry === "string") {
             copyAssets.push({
                 from: fromDir + item.entry,
                 to: toDir + item.entry
             });
             externalsManifest[`${item.module}/${item.entry}`] = `${externalsDir}${item.entry}`;
-        }else if(Array.isArray(item.entry)){
+        } else if (Array.isArray(item.entry)) {
             item.entry.forEach(entry => {
                 copyAssets.push({
                     from: fromDir + entry,
@@ -59,13 +62,51 @@ CopyWebpackExternalsManifest.prototype.apply = function (compiler) {
 
     new CopyWebpackPlugin(copyAssets).apply(compiler);
 
-    // output manifest
-    new WebpackAssetsManifest({
-        assets: externalsManifest,
-        writeToDisk: true,
-        publicPath: true,
-        sortManifest: false
-    }).apply(compiler)
+    compiler.plugin("done", function (stats) {
+        let chunks = stats.toJson().assetsByChunkName;
+
+        require('fs').writeFileSync(
+            path.join(compiler.options.output.path, _this.fileName),
+            JSON.stringify(
+                {
+                    externals: externalsManifest,
+                    chunks: sortByList(chunks, _this.chunksOrder, compiler.options.output.publicPath)
+                }
+            )
+        );
+    });
 };
+
+function sortByList(chunks, orderList, publicPath) {
+    let chunksManifest = {};
+    let orderChunks = {};
+    let palceholder = "Meaningless";
+
+    if (Array.isArray(orderList)) {
+        orderList.forEach(i => {
+            orderChunks[i] = palceholder;
+        })
+    }
+
+    Object.assign(orderChunks, chunks);
+
+    Object.keys(orderChunks).forEach(chunk => {
+        let chunkFile = orderChunks[chunk]
+
+        if (chunkFile === palceholder) {
+            return
+        }
+
+        if (typeof chunkFile === 'string') {
+            chunksManifest[chunk + path.extname(chunkFile)] = publicPath + chunkFile
+        } else if (Array.isArray(chunkFile)) {
+            chunkFile.forEach(item => {
+                chunksManifest[chunk + path.extname(item)] = publicPath + item
+            })
+        }
+    })
+
+    return chunksManifest
+}
 
 module.exports = CopyWebpackExternalsManifest;
