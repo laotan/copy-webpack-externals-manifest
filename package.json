@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/laotan/copy-webpack-externals-manifest#readme",
   "dependencies": {
-    "copy-webpack-plugin": "^4.0.1"
+    "copy-webpack-plugin": "^6.0.2"
   }
 }

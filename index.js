@@ -60,7 +60,7 @@ CopyWebpackExternalsManifest.prototype.apply = function (compiler) {
         }
     });
 
-    new CopyWebpackPlugin(copyAssets).apply(compiler);
+    new CopyWebpackPlugin({patterns : copyAssets}).apply(compiler);
 
     compiler.plugin("done", function (stats) {
         let chunks = stats.toJson().assetsByChunkName;
